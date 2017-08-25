@@ -1,0 +1,44 @@
+# Copyright (c) 2013, Ros@gmail.com and contributors
+# For license information, please see license.txt
+
+from __future__ import unicode_literals
+import frappe
+from frappe import _
+from frappe.utils import flt , cint , cstr
+
+def execute(filters=None):
+	if not filters: filters = {}
+        columns  = get_columns()
+
+        data = []
+        items= get_data(filters)
+        for d in items:
+                data.append([d.company, d.branch_name, d.to_date, d.posting_date, d.item_code, d.sales_target_quantity, d.si_name])
+        return columns, data
+
+
+def get_condition(filters):
+        condition = ""
+        if filters.get("company"): condition += "  and company=%(company)s"
+        if filters.get("to_date"): condition += " and to_date>=%(to_date)s"
+        if filters.get("from_date"): condition +=  " and posting_date<=%(posting_date)s"
+        if filters.get("branch_name"):  condition += " and branch_name=%(branch_name)s"
+        if filters.get("item_code"): condition += " and item_code=%(item_code)s"
+        if filters.get("sales_target_quantity"): condition += " and sales_target_quantity=%(sales_target_quantity)s"
+        return condition
+
+
+def get_columns():
+        "Return columns based on filters"
+        columns  = [
+                _("Company")+":Link/Company:120", _("Branch Name")+":Link/Branch:120", _("To Date")+":Date:100", _("From Date")+":Date:120", _("Item Code")+":Link/Item:150",
+                _("Sales Target Quantity")+":Data:200", _("Sales Invoice Name")+":Data:200"
+	]
+	return columns
+
+def get_data(filters):
+        condition = get_condition(filters)
+        data_list = frappe.db.sql("""SELECT  ST.company, ST.branch_name, ST.to_date, ST.posting_date, IST.item_code, IST.sales_target_quantity
+                                FROM `tabSales Target` ST, `tabItem Sales Target` IST
+                                WHERE ST.name = IST.parent AND ST.docstatus  = 1 %s """%condition, filters, as_dict = 1)
+        return data_list

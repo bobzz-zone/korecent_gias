@@ -10,5 +10,19 @@ def get_data():
 			"icon": "octicon octicon-file-directory",
 			"type": "module",
 			"label": _("Events")
+		},
+		{
+			"module_name": "Contribution",
+			"color": "grey",
+			"icon": "octicon octicon-file-directory",
+			"type": "module",
+			"label": _("Contribution")
+		},
+		{
+			"module_name": "Advance Planner",
+			"color": "grey",
+			"icon": "octicon octicon-file-directory",
+			"type": "module",
+			"label": _("Advance Planner")
 		}
 	]
