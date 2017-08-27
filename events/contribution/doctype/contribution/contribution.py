@@ -24,7 +24,7 @@ class Contribution(Document):
 			if invoice=="":
 				invoice=""" "{}" """.format(row.invoice)
 			else:
-				invoice = """{} ,"{}"" """.format(invoice,row.invoice)
+				invoice = """{} ,"{}" """.format(invoice,row.invoice)
 		items = frappe.db.sql("""select item_code, sum(qty),sum(amount) from `tabSales Invoice Item` where parrent IN ({}) group by item_code """.format(invoice),as_list=1)
 		if devided=="qty":
 			for row in items:
